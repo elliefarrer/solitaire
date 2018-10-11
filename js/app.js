@@ -110,8 +110,10 @@ $(() => {
     $columnsContainer.append($column);
     console.log('Column is', $column);
 
-    const randomCard = Math.floor(Math.random() * deckOfCards.length);
-    $column.append($(`<div class="card" value=${deckOfCards[randomCard].value} id=${randomCard}>${deckOfCards[randomCard].name}</div>`));
+    for(let i = 0; i < column.initialNumber; i++) {
+      const randomCard = Math.floor(Math.random() * deckOfCards.length);
+      $column.append($(`<div class="card" value=${deckOfCards[randomCard].value} id=${randomCard} style="top: ${i * 80}%">${deckOfCards[randomCard].name}</div>`));
+    }
   });
 
   // deckOfCards.forEach((card, i) => {
