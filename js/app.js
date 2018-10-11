@@ -77,6 +77,7 @@ const randomCard = deckOfCards[Math.floor(Math.random() * deckOfCards.length)];
 console.log('A random card is', randomCard);
 
 
+// TODO: add 'assigned cards' array to this. When a card is assigned, filter it from deckOfCards
 class CreateColumns {
   constructor(id, name, initialNumber, xPosition) {
     this.id = id;
@@ -87,5 +88,33 @@ class CreateColumns {
 }
 
 pushToArray(columns, new CreateColumns(1, 'column 1', 1, 10));
+pushToArray(columns, new CreateColumns(2, 'column 2', 2, 20));
+pushToArray(columns, new CreateColumns(3, 'column 3', 3, 30));
+pushToArray(columns, new CreateColumns(4, 'column 4', 4, 40));
+pushToArray(columns, new CreateColumns(5, 'column 5', 5, 50));
+pushToArray(columns, new CreateColumns(6, 'column 6', 6, 60));
+pushToArray(columns, new CreateColumns(7, 'column 7', 7, 70));
 
 console.log('Columns are', columns);
+
+
+$(() => {
+  const $columnsContainer = $('.columns-container');
+  console.log('Container is', $columnsContainer);
+
+  // $columnsContainer.append($('<div>Wew</div>'));
+
+  columns.forEach(column => {
+    // const $newColumn = `<div>${column.id}</div>`;
+    const $column = $(`<div class=${column.name} style="left: ${column.xPosition}%">${column.id}</div>`);
+    $columnsContainer.append($column);
+    console.log('Column is', $column);
+
+    const randomCard = Math.floor(Math.random() * deckOfCards.length);
+    $column.append($(`<div class="card" value=${deckOfCards[randomCard].value} id=${randomCard}>${deckOfCards[randomCard].name}</div>`));
+  });
+
+  // deckOfCards.forEach((card, i) => {
+  //   $columnsContainer.append($(`<div class="card" value=${card.value} id=${i}>${card.name}</div>`));
+  // });
+});

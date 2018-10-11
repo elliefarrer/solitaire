@@ -1,3 +1,18 @@
 h1 {
   color: pink;
 }
+
+.columns-container {
+  position: absolute;
+  width: 100vw;
+}
+
+.columns-container div {
+  position: absolute;
+}
+
+.card {
+  width: 10vw;
+  height: 15vh;
+  background-color: aliceblue;
+}
