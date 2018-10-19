@@ -121,6 +121,7 @@ const flipCard = card => {
 
 $(() => {
   const $columnsContainer = $('.columns-container');
+  const $remainingCardsBack = $('.remaining-cards-back');
   const $remainingCardsFront = $('.remaining-cards-front');
 
   // $columnsContainer.append($('<div>Wew</div>'));
@@ -148,9 +149,31 @@ $(() => {
 
   console.log('Deck of cards now contains', deckOfCards);
 
+  let remainingCardsBack = [];
+  let remainingCardsFront = [];
+
   deckOfCards.forEach(card => {
     const $newCard = $(`<div class="card back ${card.suit}">${card.name}</div>`);
-    $remainingCardsFront.append($newCard);
-    deckOfCards = [];
+    $remainingCardsBack.append($newCard);
+    remainingCardsBack.push($newCard);
+  });
+
+  $remainingCardsBack.click(function() {
+    console.log('The remaining cards are', remainingCardsBack);
+
+    for (let i = 0; i < 3; i ++) {
+      $remainingCardsFront.append(remainingCardsBack[i]);
+      flipCard(remainingCardsBack[i]);
+      remainingCardsBack[i].css({ left: 15 + (i * 30) });
+      remainingCardsFront.push(remainingCardsBack[i]);
+    }
+    remainingCardsBack = remainingCardsBack.slice(3, remainingCardsBack.length);
+
+    console.log('Now the remaining cards are', remainingCardsBack);
+
+    // if (remainingCardsBack.length === 0) {
+    //   remainingCardsBack = remainingCardsFront;
+    //   remainingCardsFront = [];
+    // }
   });
 });

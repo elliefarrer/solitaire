@@ -2,10 +2,25 @@ h1 {
   color: pink;
 }
 
+.remaining-cards-back {
+  position: absolute;
+}
+
+.remaining-cards-front {
+  position: absolute;
+  left: 15%;
+}
+
+.found-cards {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .columns-container {
   position: absolute;
   width: 100vw;
-  height: 100vh;
+  height: 80vh;
+  bottom: 0;
 }
 
 .columns-container div {
