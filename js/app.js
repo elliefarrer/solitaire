@@ -81,7 +81,7 @@ const shuffleCards = () => {
 shuffleCards();
 console.log('The shuffled deck is', deckOfCards);
 
-// TODO: add 'assigned cards' array to this. When a card is assigned, filter it from deckOfCards
+
 class CreateColumns {
   constructor(id, name, initialNumber, xPosition, cards) {
     this.id = id;
@@ -107,6 +107,10 @@ const flipCard = card => {
     card.showFront = true;
     card.removeClass('back');
     card.addClass('front');
+  } else {
+    card.showFront = false;
+    card.removeClass('front');
+    card.addClass('back');
   }
   // assignColor(card);
 };
@@ -119,6 +123,10 @@ const flipCard = card => {
 //   }
 // };
 
+const appendElement = (parent, el) => {
+  parent.append(el);
+};
+
 $(() => {
   const $columnsContainer = $('.columns-container');
   const $remainingCardsBack = $('.remaining-cards-back');
@@ -129,13 +137,13 @@ $(() => {
   columns.forEach(column => {
     // const $newColumn = `<div>${column.id}</div>`;
     const $column = $(`<div class=${column.name} style="left: ${column.xPosition}%">${column.id}</div>`);
-    $columnsContainer.append($column);
+    appendElement($columnsContainer, $column);
 
     for (let cardIndex = 0; cardIndex < column.initialNumber; cardIndex++) {
       console.log(cardIndex);
       const $newCard = $(`<div class="card back ${deckOfCards[cardIndex].suit}" style="top: ${cardIndex * 200}%">${deckOfCards[cardIndex].name}</div>`);
-      column.cards.push($newCard);
-      $column.append($newCard);
+      pushToArray(column.cards, $newCard);
+      appendElement($column, $newCard);
       deckOfCards = deckOfCards.filter(card => card.name !== deckOfCards[cardIndex].name);
 
     }
@@ -154,26 +162,37 @@ $(() => {
 
   deckOfCards.forEach(card => {
     const $newCard = $(`<div class="card back ${card.suit}">${card.name}</div>`);
-    $remainingCardsBack.append($newCard);
-    remainingCardsBack.push($newCard);
+    appendElement($remainingCardsBack, $newCard);
+    pushToArray(remainingCardsBack, $newCard);
   });
 
   $remainingCardsBack.click(function() {
     console.log('The remaining cards are', remainingCardsBack);
 
     for (let i = 0; i < 3; i ++) {
-      $remainingCardsFront.append(remainingCardsBack[i]);
+      appendElement($remainingCardsFront, remainingCardsBack[i]);
       flipCard(remainingCardsBack[i]);
       remainingCardsBack[i].css({ left: 15 + (i * 30) });
-      remainingCardsFront.push(remainingCardsBack[i]);
+      pushToArray(remainingCardsFront, remainingCardsBack[i]);
     }
+
     remainingCardsBack = remainingCardsBack.slice(3, remainingCardsBack.length);
 
     console.log('Now the remaining cards are', remainingCardsBack);
 
-    // if (remainingCardsBack.length === 0) {
-    //   remainingCardsBack = remainingCardsFront;
-    //   remainingCardsFront = [];
-    // }
+    if(remainingCardsBack.length <= 3) {
+      $remainingCardsBack.empty();
+    }
+
+    if (remainingCardsBack.length === 0) {
+      remainingCardsFront.forEach(card => {
+        appendElement($remainingCardsBack, card);
+        pushToArray(remainingCardsBack, card);
+        flipCard(card);
+        card.css({ left: 0 });
+      });
+      remainingCardsFront = [];
+      $remainingCardsFront.empty();
+    }
   });
 });

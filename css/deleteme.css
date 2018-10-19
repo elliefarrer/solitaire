@@ -4,11 +4,14 @@ h1 {
 
 .remaining-cards-back {
   position: absolute;
+  width: 10vw;
+  height: 15vh;
 }
 
 .remaining-cards-front {
   position: absolute;
   left: 15%;
+
 }
 
 .found-cards {
