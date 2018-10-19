@@ -1,5 +1,22 @@
+body {
+  background-color: seagreen;
+  /* background-color: honeydew; */
+}
+
 h1 {
   color: pink;
+}
+
+.top {
+  height: 10vh;
+  display: flex;
+  justify-content: space-between;
+}
+
+.remaining-cards {
+  width: 40vw;
+  height: 10vh;
+  margin: 0;
 }
 
 .remaining-cards-back {
@@ -15,8 +32,13 @@ h1 {
 }
 
 .found-cards {
+  width: 60vw;
+  position: absolute;
+  right: 0;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-around;
+  align-items: center;
+  height: 15vh;
 }
 
 .columns-container {

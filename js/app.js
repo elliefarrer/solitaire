@@ -102,6 +102,18 @@ pushToArray(columns, new CreateColumns(7, 'column 7', 7, 70, []));
 
 console.log('Columns are', columns);
 
+const banks = [];
+
+const heartsBank = { icon: '♥︎', suit: 'hearts', 1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false, 9: false, 10: false, 11: false, 12: false, 13: false };
+const diamondsBank = { icon: '♦︎', suit: 'diamonds', 1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false, 9: false, 10: false, 11: false, 12: false, 13: false };
+const spadesBank = { icon: '♠︎', suit: 'spades', 1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false, 9: false, 10: false, 11: false, 12: false, 13: false };
+const clubsBank = { icon: '♣︎', suit: 'clubs', 1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false, 9: false, 10: false, 11: false, 12: false, 13: false };
+
+pushToArray(banks, heartsBank);
+pushToArray(banks, diamondsBank);
+pushToArray(banks, spadesBank);
+pushToArray(banks, clubsBank);
+
 const flipCard = card => {
   if(!card.showFront) {
     card.showFront = true;
@@ -131,6 +143,7 @@ $(() => {
   const $columnsContainer = $('.columns-container');
   const $remainingCardsBack = $('.remaining-cards-back');
   const $remainingCardsFront = $('.remaining-cards-front');
+  const $foundCards = $('.found-cards');
 
   // $columnsContainer.append($('<div>Wew</div>'));
 
@@ -141,7 +154,7 @@ $(() => {
 
     for (let cardIndex = 0; cardIndex < column.initialNumber; cardIndex++) {
       console.log(cardIndex);
-      const $newCard = $(`<div class="card back ${deckOfCards[cardIndex].suit}" style="top: ${cardIndex * 200}%">${deckOfCards[cardIndex].name}</div>`);
+      const $newCard = $(`<div class="card back ${deckOfCards[cardIndex].suit}" style="top: ${cardIndex * 200}%" value="${deckOfCards[cardIndex].value}" suit="${deckOfCards[cardIndex].suit}">${deckOfCards[cardIndex].name}</div>`);
       pushToArray(column.cards, $newCard);
       appendElement($column, $newCard);
       deckOfCards = deckOfCards.filter(card => card.name !== deckOfCards[cardIndex].name);
@@ -161,7 +174,7 @@ $(() => {
   let remainingCardsFront = [];
 
   deckOfCards.forEach(card => {
-    const $newCard = $(`<div class="card back ${card.suit}">${card.name}</div>`);
+    const $newCard = $(`<div class="card back ${card.suit}" value="${card.value}" suit="${card.suit}">${card.name}</div>`);
     appendElement($remainingCardsBack, $newCard);
     pushToArray(remainingCardsBack, $newCard);
   });
@@ -194,5 +207,22 @@ $(() => {
       remainingCardsFront = [];
       $remainingCardsFront.empty();
     }
+  });
+
+
+  banks.forEach(bank => {
+    const $bank = $(`<div class="bank" id="${bank.suit}">${bank.icon}</div>`);
+    $bank.appendTo($foundCards);
+  });
+
+  const $card = $('.column .card');
+  console.log('card is', $card);
+
+  $card.dblclick(function() {
+    const $dblClicked = $(this);
+    const suit = $dblClicked.attr('suit');
+    $dblClicked.appendTo($(`#${suit}`));
+    $dblClicked.css({ top: 0 });
+    // console.log('this should go to', $(`#${$(this).id}`));
   });
 });
