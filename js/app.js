@@ -103,9 +103,19 @@ console.log('Columns are', columns);
 const flipCard = card => {
   if(!card.showFront) {
     card.showFront = true;
+    card.removeClass('back');
     card.addClass('front');
   }
+  // assignColor(card);
 };
+
+// const assignColor = card => {
+//   if(card.suit === 'hearts' || card.suit === 'diamonds') {
+//     card.addClass('red');
+//   } else {
+//     card.addClass('black');
+//   }
+// };
 
 $(() => {
   const $columnsContainer = $('.columns-container');
@@ -119,14 +129,16 @@ $(() => {
 
     for (let cardIndex = 0; cardIndex < column.initialNumber; cardIndex++) {
       console.log(cardIndex);
-      const $newCard = $(`<div class="card" style="top: ${cardIndex * 200}%">${deckOfCards[cardIndex].name}</div>`);
+      const $newCard = $(`<div class="card back ${deckOfCards[cardIndex].suit}" style="top: ${cardIndex * 200}%">${deckOfCards[cardIndex].name}</div>`);
       column.cards.push($newCard);
       $column.append($newCard);
       deckOfCards = deckOfCards.filter(card => card.name !== deckOfCards[cardIndex].name);
+
     }
     console.log('The column has', column.cards);
 
     flipCard(column.cards[column.cards.length - 1]);
+    console.log('This cards suit is', column.cards[column.cards.length - 1]);
   });
 
   console.log('Deck of cards now contains', deckOfCards);

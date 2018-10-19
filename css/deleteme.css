@@ -15,13 +15,25 @@ h1 {
 .card {
   width: 10vw;
   height: 15vh;
-  background-color: aliceblue;
-  color: aliceblue;
+  background-color: peachpuff;
+  color: peachpuff;
   border: 3px solid black;
   position: absolute;
 }
 
 .front {
-  background-color: pink;
+  background-color: white;
+  /* color: black; */
+}
+
+.hearts, .diamonds {
+  color: red;
+}
+
+.clubs, .spades {
   color: black;
+}
+
+.back {
+  color: peachpuff;
 }
