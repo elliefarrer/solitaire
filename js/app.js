@@ -12,9 +12,9 @@ class CreateDeck {
 let deckOfCards = [];
 const columns = [];
 
-function pushToArray(array, newItem) {
+const pushToArray = (array, newItem) => {
   array.push(newItem);
-}
+};
 
 pushToArray(deckOfCards, new CreateDeck(0, 'King of Hearts', 'king', 'hearts', 13));
 pushToArray(deckOfCards, new CreateDeck(1, 'Queen of Hearts', 'queen', 'hearts', 12));
@@ -78,6 +78,7 @@ const shuffleCards = () => {
 
 shuffleCards();
 console.log('The shuffled deck is', deckOfCards);
+
 // TODO: add 'assigned cards' array to this. When a card is assigned, filter it from deckOfCards
 class CreateColumns {
   constructor(id, name, initialNumber, xPosition, cards) {
@@ -107,12 +108,14 @@ $(() => {
     // const $newColumn = `<div>${column.id}</div>`;
     const $column = $(`<div class=${column.name} style="left: ${column.xPosition}%">${column.id}</div>`);
     $columnsContainer.append($column);
+
+    for (let cardIndex = 0; cardIndex < column.initialNumber; cardIndex++) {
+      console.log(cardIndex);
+      const $newCard = $(`<div class="card" style="top: ${cardIndex * 200}%">${deckOfCards[cardIndex].name}</div>`);
+      $column.append($newCard);
+      deckOfCards = deckOfCards.filter(card => card.name !== deckOfCards[cardIndex].name);
+    }
   });
+
+  console.log('Deck of cards now contains', deckOfCards);
 });
-
-
-
-// TODO: after lunch, go back to original plan so splat indices array and just get rid of this shit from the cardsInDeck array. Get a random number up to that array's length, and use that as the index to of cardsInDeck[randomNumber].id. This id is the random number. Then splat that card from the array.
-
-
-//TODO: do a sort instead, essentially you're shuffling the order of the cards and sticking the first however many in.
