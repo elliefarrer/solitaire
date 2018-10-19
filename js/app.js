@@ -1,3 +1,5 @@
+// IDEA: make the game cheat-proof so the user can't just go into dev tools and see where the unflipped cards are
+
 class CreateDeck {
   constructor(_id, name, type, suit, value) {
     this._id = _id;
@@ -119,6 +121,7 @@ const flipCard = card => {
 
 $(() => {
   const $columnsContainer = $('.columns-container');
+  const $remainingCardsFront = $('.remaining-cards-front');
 
   // $columnsContainer.append($('<div>Wew</div>'));
 
@@ -138,8 +141,16 @@ $(() => {
     console.log('The column has', column.cards);
 
     flipCard(column.cards[column.cards.length - 1]);
+    // flipCard(column.cards[1]);
+    // flipCard(column.cards[column.cards.length - 4]);
     console.log('This cards suit is', column.cards[column.cards.length - 1]);
   });
 
   console.log('Deck of cards now contains', deckOfCards);
+
+  deckOfCards.forEach(card => {
+    const $newCard = $(`<div class="card back ${card.suit}">${card.name}</div>`);
+    $remainingCardsFront.append($newCard);
+    deckOfCards = [];
+  });
 });
