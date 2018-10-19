@@ -139,11 +139,29 @@ const appendElement = (parent, el) => {
   parent.append(el);
 };
 
+let remainingCardsFront = [];
+let remainingCardsBack = [];
+
+function bankCard() {
+  console.log('Clicked on', $(this));
+  const $dblClicked = $(this);
+  const suit = $dblClicked.attr('suit');
+  console.log('Suit is', suit);
+  $dblClicked.appendTo($(`#${suit}`));
+  console.log('This should go to', $(`#${suit}`));
+  $dblClicked.css({ top: 0, left: '' });
+
+  remainingCardsFront = remainingCardsFront.filter(card => {
+    card !== $dblClicked;
+  });
+}
+
 $(() => {
   const $columnsContainer = $('.columns-container');
   const $remainingCardsBack = $('.remaining-cards-back');
   const $remainingCardsFront = $('.remaining-cards-front');
   const $foundCards = $('.found-cards');
+  let $card;
 
   // $columnsContainer.append($('<div>Wew</div>'));
 
@@ -170,9 +188,6 @@ $(() => {
 
   console.log('Deck of cards now contains', deckOfCards);
 
-  let remainingCardsBack = [];
-  let remainingCardsFront = [];
-
   deckOfCards.forEach(card => {
     const $newCard = $(`<div class="card back ${card.suit}" value="${card.value}" suit="${card.suit}">${card.name}</div>`);
     appendElement($remainingCardsBack, $newCard);
@@ -186,6 +201,8 @@ $(() => {
       appendElement($remainingCardsFront, remainingCardsBack[i]);
       flipCard(remainingCardsBack[i]);
       remainingCardsBack[i].css({ left: 15 + (i * 30) });
+      remainingCardsBack[i].removeClass('back');
+      remainingCardsBack[i].addClass('front');
       pushToArray(remainingCardsFront, remainingCardsBack[i]);
     }
 
@@ -203,10 +220,13 @@ $(() => {
         pushToArray(remainingCardsBack, card);
         flipCard(card);
         card.css({ left: 0 });
+        card.removeClass('front');
+        card.addClass('back');
       });
       remainingCardsFront = [];
       $remainingCardsFront.empty();
     }
+    addDblClickEventListener();
   });
 
 
@@ -215,14 +235,14 @@ $(() => {
     $bank.appendTo($foundCards);
   });
 
-  const $card = $('.column .card');
-  console.log('card is', $card);
 
-  $card.dblclick(function() {
-    const $dblClicked = $(this);
-    const suit = $dblClicked.attr('suit');
-    $dblClicked.appendTo($(`#${suit}`));
-    $dblClicked.css({ top: 0 });
-    // console.log('this should go to', $(`#${$(this).id}`));
-  });
+
+  $card = $('.column .front, .cards-remaining-front:last-child');
+  $card.on('dblclick', bankCard);
+
+  const addDblClickEventListener = () => {
+    remainingCardsFront.forEach(card => {
+      card.dblclick(bankCard);
+    });
+  };
 });
