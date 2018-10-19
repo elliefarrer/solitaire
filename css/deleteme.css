@@ -5,6 +5,7 @@ h1 {
 .columns-container {
   position: absolute;
   width: 100vw;
+  height: 100vh;
 }
 
 .columns-container div {
