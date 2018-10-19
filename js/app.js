@@ -143,18 +143,22 @@ let remainingCardsFront = [];
 let remainingCardsBack = [];
 
 function bankCard() {
-  console.log('Clicked on', $(this));
+  console.log('Starts as', remainingCardsFront);
   const $dblClicked = $(this);
   const suit = $dblClicked.attr('suit');
   console.log('Suit is', suit);
   $dblClicked.appendTo($(`#${suit}`));
   console.log('This should go to', $(`#${suit}`));
   $dblClicked.css({ top: 0, left: '' });
+  remainingCardsFront.pop();
+  addDblClickEventListener();
 
-  remainingCardsFront = remainingCardsFront.filter(card => {
-    card !== $dblClicked;
-  });
 }
+
+const addDblClickEventListener = () => {
+  console.log('This is available', remainingCardsFront[remainingCardsFront.length-1]);
+  remainingCardsFront[remainingCardsFront.length-1].on('dblclick', bankCard);
+};
 
 $(() => {
   const $columnsContainer = $('.columns-container');
@@ -237,12 +241,8 @@ $(() => {
 
 
 
-  $card = $('.column .front, .cards-remaining-front:last-child');
+  $card = $('.column .front');
   $card.on('dblclick', bankCard);
 
-  const addDblClickEventListener = () => {
-    remainingCardsFront.forEach(card => {
-      card.dblclick(bankCard);
-    });
-  };
+
 });
