@@ -104,15 +104,15 @@ console.log('Columns are', columns);
 
 const banks = [];
 
-const heartsBank = { icon: '♥︎', suit: 'hearts', 1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false, 9: false, 10: false, 11: false, 12: false, 13: false };
-const diamondsBank = { icon: '♦︎', suit: 'diamonds', 1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false, 9: false, 10: false, 11: false, 12: false, 13: false };
-const spadesBank = { icon: '♠︎', suit: 'spades', 1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false, 9: false, 10: false, 11: false, 12: false, 13: false };
-const clubsBank = { icon: '♣︎', suit: 'clubs', 1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false, 9: false, 10: false, 11: false, 12: false, 13: false };
+const hearts = { icon: '♥︎', suit: 'hearts', banked: [true, false, false, false, false, false, false, false, false, false, false, false, false, false]};
+const diamonds = { icon: '♦︎', suit: 'diamonds', banked: [true, false, false, false, false, false, false, false, false, false, false, false, false, false] };
+const spades = { icon: '♠︎', suit: 'spades', banked: [true, false, false, false, false, false, false, false, false, false, false, false, false, false] };
+const clubs = { icon: '♣︎', suit: 'clubs', banked: [true, false, false, false, false, false, false, false, false, false, false, false, false, false] };
 
-pushToArray(banks, heartsBank);
-pushToArray(banks, diamondsBank);
-pushToArray(banks, spadesBank);
-pushToArray(banks, clubsBank);
+pushToArray(banks, hearts);
+pushToArray(banks, diamonds);
+pushToArray(banks, spades);
+pushToArray(banks, clubs);
 
 const flipCard = card => {
   if(!card.showFront) {
@@ -139,27 +139,74 @@ const appendElement = (parent, el) => {
   parent.append(el);
 };
 
+const checkCardValidity = (suit, cardIndex, $dblClicked) => {
+
+};
+
 let remainingCardsFront = [];
 let remainingCardsBack = [];
 
 function bankCard() {
-  console.log('Starts as', remainingCardsFront);
   const $dblClicked = $(this);
   const suit = $dblClicked.attr('suit');
-  console.log('Suit is', suit);
-  $dblClicked.appendTo($(`#${suit}`));
-  console.log('This should go to', $(`#${suit}`));
-  $dblClicked.css({ top: 0, left: '' });
-  remainingCardsFront.pop();
-  addDblClickEventListener();
+  const cardIndex = $dblClicked.attr('value');
 
+  if(suit === 'hearts') {
+    if(hearts.banked[cardIndex] === false && hearts.banked[cardIndex - 1] === true) {
+      hearts.banked[cardIndex] = true;
+      $dblClicked.appendTo($(`#${suit}`));
+      $dblClicked.css({ top: 0, left: '' });
+      remainingCardsFront.pop();
+      if(remainingCardsFront.length > 0) {
+        addDblClickEventListener();
+      }
+    } else {
+      console.log('Nope');
+    }
+  } else if(suit === 'diamonds') {
+    if(diamonds.banked[cardIndex] === false && diamonds.banked[cardIndex - 1] === true) {
+      diamonds.banked[cardIndex] = true;
+      $dblClicked.appendTo($(`#${suit}`));
+      $dblClicked.css({ top: 0, left: '' });
+      remainingCardsFront.pop();
+      if(remainingCardsFront.length > 0) {
+        addDblClickEventListener();
+      }
+    } else {
+      console.log('Nope');
+    }
+  } else if (suit === 'spades'){
+    if(spades.banked[cardIndex] === false && spades.banked[cardIndex - 1] === true) {
+      spades.banked[cardIndex] = true;
+      $dblClicked.appendTo($(`#${suit}`));
+      $dblClicked.css({ top: 0, left: '' });
+      remainingCardsFront.pop();
+      if(remainingCardsFront.length > 0) {
+        addDblClickEventListener();
+      }
+    } else {
+      console.log('Nope');
+    }
+  } else {
+    if(clubs.banked[cardIndex] === false && clubs.banked[cardIndex - 1] === true) {
+      clubs.banked[cardIndex] = true;
+      $dblClicked.appendTo($(`#${suit}`));
+      $dblClicked.css({ top: 0, left: '' });
+      remainingCardsFront.pop();
+      if(remainingCardsFront.length > 0) {
+        addDblClickEventListener();
+      }
+    } else {
+      console.log('Nope');
+    }
+  }
 }
 
 const addDblClickEventListener = () => {
-  console.log('This is available', remainingCardsFront[remainingCardsFront.length-1]);
   remainingCardsFront[remainingCardsFront.length-1].on('dblclick', bankCard);
 };
 
+//BUG: cannot go round deck again for a third time
 $(() => {
   const $columnsContainer = $('.columns-container');
   const $remainingCardsBack = $('.remaining-cards-back');
