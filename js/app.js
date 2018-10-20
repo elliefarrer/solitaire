@@ -252,21 +252,31 @@ $(() => {
   });
 
   $remainingCardsBack.on('click', function() {
-
     if (remainingCardsBack.length >= 3) {
       for (let i = 0; i < 3; i ++) {
         flipCardsOnDeck(i);
       }
+      console.log('Remaining are', remainingCardsBack);
     } else {
       for (let i = 0; i < remainingCardsBack.length; i ++) {
         flipCardsOnDeck(i);
       }
+      console.log('Remaining are', remainingCardsBack);
+
     }
 
-    remainingCardsBack = remainingCardsBack.slice(3, remainingCardsBack.length);
+    if (remainingCardsBack.length > 4) {
+      console.log('Keep going', remainingCardsBack.length);
+      remainingCardsBack = remainingCardsBack.slice(3, remainingCardsBack.length);
+    } else if (remainingCardsBack.length <= 3 && remainingCardsBack.length > 0) {
+      console.log('Now the array should be emptied', remainingCardsBack.length);
+      remainingCardsBack = remainingCardsBack.slice(2, remainingCardsBack.length);
+      console.log('This is the emptied array', remainingCardsBack.length);
+    }
 
     if (remainingCardsBack.length === 0) {
       numberOfDeckFlipCompletions++;
+      console.log('This is increasing', numberOfDeckFlipCompletions);
 
       if (numberOfDeckFlipCompletions === 3) {
         $remainingCardsBack.html('☓');
@@ -285,7 +295,9 @@ $(() => {
         remainingCardsFront = [];
       }
     }
-    addDblClickEventListener();
+    if(remainingCardsBack.length > 0) {
+      addDblClickEventListener();
+    }
   });
 
 
