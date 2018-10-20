@@ -1,4 +1,11 @@
 // IDEA: make the game cheat-proof so the user can't just go into dev tools and see where the unflipped cards are
+let numberOfDeckFlipCompletions = 0;
+
+let deckOfCards = [];
+const columns = [];
+const banks = [];
+let remainingCardsFront = [];
+let remainingCardsBack = [];
 
 class CreateDeck {
   constructor(_id, name, type, suit, value) {
@@ -10,9 +17,6 @@ class CreateDeck {
     this.showFront = false;
   }
 }
-
-let deckOfCards = [];
-const columns = [];
 
 const pushToArray = (array, newItem) => {
   array.push(newItem);
@@ -74,13 +78,6 @@ pushToArray(deckOfCards, new CreateDeck(49, '3♣︎', 'three', 'clubs', 3));
 pushToArray(deckOfCards, new CreateDeck(50, '2♣︎', 'two', 'clubs', 2));
 pushToArray(deckOfCards, new CreateDeck(51, 'A♣︎', 'ace', 'clubs', 1));
 
-const shuffleCards = () => {
-  deckOfCards = deckOfCards.sort(() => .5 - Math.random());
-};
-
-shuffleCards();
-console.log('The shuffled deck is', deckOfCards);
-
 
 class CreateColumns {
   constructor(id, name, initialNumber, xPosition, cards) {
@@ -102,7 +99,6 @@ pushToArray(columns, new CreateColumns(7, 'column 7', 7, 70, []));
 
 console.log('Columns are', columns);
 
-const banks = [];
 
 const hearts = { icon: '♥︎', suit: 'hearts', banked: [true, false, false, false, false, false, false, false, false, false, false, false, false, false]};
 const diamonds = { icon: '♦︎', suit: 'diamonds', banked: [true, false, false, false, false, false, false, false, false, false, false, false, false, false] };
@@ -113,6 +109,14 @@ pushToArray(banks, hearts);
 pushToArray(banks, diamonds);
 pushToArray(banks, spades);
 pushToArray(banks, clubs);
+
+
+const shuffleCards = () => {
+  deckOfCards = deckOfCards.sort(() => .5 - Math.random());
+};
+
+shuffleCards();
+console.log('The shuffled deck is', deckOfCards);
 
 const flipCard = card => {
   if(!card.showFront) {
@@ -138,13 +142,6 @@ const flipCard = card => {
 const appendElement = (parent, el) => {
   parent.append(el);
 };
-
-const checkCardValidity = (suit, cardIndex, $dblClicked) => {
-
-};
-
-let remainingCardsFront = [];
-let remainingCardsBack = [];
 
 function bankCard() {
   const $dblClicked = $(this);
@@ -206,6 +203,7 @@ const addDblClickEventListener = () => {
   remainingCardsFront[remainingCardsFront.length-1].on('dblclick', bankCard);
 };
 
+
 //BUG: cannot go round deck again for a third time
 $(() => {
   const $columnsContainer = $('.columns-container');
@@ -214,6 +212,14 @@ $(() => {
   const $foundCards = $('.found-cards');
   let $card;
 
+  const flipCardsOnDeck = i => {
+    appendElement($remainingCardsFront, remainingCardsBack[i]);
+    flipCard(remainingCardsBack[i]);
+    remainingCardsBack[i].css({ left: 15 + (i * 30) });
+    remainingCardsBack[i].removeClass('back');
+    remainingCardsBack[i].addClass('front');
+    pushToArray(remainingCardsFront, remainingCardsBack[i]);
+  };
   // $columnsContainer.append($('<div>Wew</div>'));
 
   columns.forEach(column => {
@@ -245,37 +251,39 @@ $(() => {
     pushToArray(remainingCardsBack, $newCard);
   });
 
-  $remainingCardsBack.click(function() {
-    console.log('The remaining cards are', remainingCardsBack);
+  $remainingCardsBack.on('click', function() {
 
-    for (let i = 0; i < 3; i ++) {
-      appendElement($remainingCardsFront, remainingCardsBack[i]);
-      flipCard(remainingCardsBack[i]);
-      remainingCardsBack[i].css({ left: 15 + (i * 30) });
-      remainingCardsBack[i].removeClass('back');
-      remainingCardsBack[i].addClass('front');
-      pushToArray(remainingCardsFront, remainingCardsBack[i]);
+    if (remainingCardsBack.length >= 3) {
+      for (let i = 0; i < 3; i ++) {
+        flipCardsOnDeck(i);
+      }
+    } else {
+      for (let i = 0; i < remainingCardsBack.length; i ++) {
+        flipCardsOnDeck(i);
+      }
     }
 
     remainingCardsBack = remainingCardsBack.slice(3, remainingCardsBack.length);
 
-    console.log('Now the remaining cards are', remainingCardsBack);
-
-    if(remainingCardsBack.length <= 3) {
-      $remainingCardsBack.empty();
-    }
-
     if (remainingCardsBack.length === 0) {
-      remainingCardsFront.forEach(card => {
-        appendElement($remainingCardsBack, card);
-        pushToArray(remainingCardsBack, card);
-        flipCard(card);
-        card.css({ left: 0 });
-        card.removeClass('front');
-        card.addClass('back');
-      });
-      remainingCardsFront = [];
-      $remainingCardsFront.empty();
+      numberOfDeckFlipCompletions++;
+
+      if (numberOfDeckFlipCompletions === 3) {
+        $remainingCardsBack.html('☓');
+        $remainingCardsBack.off('click');
+      } else {
+        remainingCardsFront.forEach(card => {
+          appendElement($remainingCardsBack, card);
+          pushToArray(remainingCardsBack, card);
+          flipCard(card);
+          card.css({ left: 0 });
+          card.removeClass('front');
+          card.addClass('back');
+          $remainingCardsFront.empty();
+          console.log('finished');
+        });
+        remainingCardsFront = [];
+      }
     }
     addDblClickEventListener();
   });
