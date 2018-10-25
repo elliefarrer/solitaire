@@ -128,16 +128,7 @@ const flipCard = card => {
     card.removeClass('front');
     card.addClass('back');
   }
-  // assignColor(card);
 };
-
-// const assignColor = card => {
-//   if(card.suit === 'hearts' || card.suit === 'diamonds') {
-//     card.addClass('red');
-//   } else {
-//     card.addClass('black');
-//   }
-// };
 
 const appendElement = (parent, el) => {
   parent.append(el);
@@ -197,12 +188,20 @@ function bankCard() {
       console.log('Nope');
     }
   }
+  flipNextCardOnColumn();
 }
 
 const addDblClickEventListener = () => {
   remainingCardsFront[remainingCardsFront.length-1].on('dblclick', bankCard);
 };
 
+const flipNextCardOnColumn = () => {
+  const $lastCard = $('.columns-container .column .card:last-child');
+  setTimeout(() => {
+    flipCard($lastCard);
+  }, 500);
+  //BUG: cannot then double click to bank next card
+};
 
 //BUG: cannot go round deck again for a third time
 $(() => {
@@ -221,6 +220,7 @@ $(() => {
     pushToArray(remainingCardsFront, remainingCardsBack[i]);
   };
   // $columnsContainer.append($('<div>Wew</div>'));
+
 
   columns.forEach(column => {
     // const $newColumn = `<div>${column.id}</div>`;
@@ -265,14 +265,19 @@ $(() => {
 
     }
 
-    if (remainingCardsBack.length > 4) {
+    if (remainingCardsBack.length >= 4) {
       console.log('Keep going', remainingCardsBack.length);
       remainingCardsBack = remainingCardsBack.slice(3, remainingCardsBack.length);
-    } else if (remainingCardsBack.length <= 3 && remainingCardsBack.length > 0) {
+    } else if (remainingCardsBack.length === 3) {
+      console.log('The new one', remainingCardsBack.length);
+      remainingCardsBack = remainingCardsBack.slice(0, 1);
+    } else if (remainingCardsBack.length < 3 && remainingCardsBack.length > 0) {
       console.log('Now the array should be emptied', remainingCardsBack.length);
-      remainingCardsBack = remainingCardsBack.slice(2, remainingCardsBack.length);
+      remainingCardsBack = [];
       console.log('This is the emptied array', remainingCardsBack.length);
+      console.log('And in the array, we have', remainingCardsBack);
     }
+
 
     if (remainingCardsBack.length === 0) {
       numberOfDeckFlipCompletions++;
