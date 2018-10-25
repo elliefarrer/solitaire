@@ -120,10 +120,22 @@ console.log('The shuffled deck is', deckOfCards);
 
 const flipCard = card => {
   if(!card.showFront) {
+    flipCardToShowFront(card);
+  } else {
+    flipCardToShowBack(card);
+  }
+};
+
+const flipCardToShowFront = card => {
+  if(!card.showFront) {
     card.showFront = true;
     card.removeClass('back');
     card.addClass('front');
-  } else {
+  }
+};
+
+const flipCardToShowBack = card => {
+  if(card.showFront) {
     card.showFront = false;
     card.removeClass('front');
     card.addClass('back');
@@ -198,9 +210,15 @@ const addDblClickEventListener = () => {
 const flipNextCardOnColumn = () => {
   const $lastCard = $('.columns-container .column .card:last-child');
   setTimeout(() => {
-    flipCard($lastCard);
+    flipCardToShowFront($lastCard);
+    addDblClickEventListenerToColumnCards();
   }, 500);
   //BUG: cannot then double click to bank next card
+};
+
+const addDblClickEventListenerToColumnCards = () => {
+  const $card = $('.column .front');
+  $card.on('dblclick', bankCard);
 };
 
 //BUG: cannot go round deck again for a third time
@@ -209,7 +227,6 @@ $(() => {
   const $remainingCardsBack = $('.remaining-cards-back');
   const $remainingCardsFront = $('.remaining-cards-front');
   const $foundCards = $('.found-cards');
-  let $card;
 
   const flipCardsOnDeck = i => {
     appendElement($remainingCardsFront, remainingCardsBack[i]);
@@ -311,10 +328,6 @@ $(() => {
     $bank.appendTo($foundCards);
   });
 
-
-
-  $card = $('.column .front');
-  $card.on('dblclick', bankCard);
-
+  addDblClickEventListenerToColumnCards();
 
 });
