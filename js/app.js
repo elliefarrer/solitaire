@@ -212,21 +212,23 @@ const flipNextCardOnColumn = () => {
   setTimeout(() => {
     flipCardToShowFront($lastCard);
     addDblClickEventListenerToColumnCards();
-  }, 500);
-  //BUG: cannot then double click to bank next card
+  }, 300);
 };
 
 const addDblClickEventListenerToColumnCards = () => {
-  const $card = $('.column .front');
-  $card.on('dblclick', bankCard);
+  const $frontCard = $('.column .front');
+  $frontCard.on('dblclick', bankCard);
 };
 
 //BUG: cannot go round deck again for a third time
 $(() => {
+
   const $columnsContainer = $('.columns-container');
+  const $foundCards = $('.found-cards');
   const $remainingCardsBack = $('.remaining-cards-back');
   const $remainingCardsFront = $('.remaining-cards-front');
-  const $foundCards = $('.found-cards');
+
+  let draggableCards = [];
 
   const flipCardsOnDeck = i => {
     appendElement($remainingCardsFront, remainingCardsBack[i]);
@@ -255,8 +257,6 @@ $(() => {
     console.log('The column has', column.cards);
 
     flipCard(column.cards[column.cards.length - 1]);
-    // flipCard(column.cards[1]);
-    // flipCard(column.cards[column.cards.length - 4]);
     console.log('This cards suit is', column.cards[column.cards.length - 1]);
   });
 
@@ -330,4 +330,23 @@ $(() => {
 
   addDblClickEventListenerToColumnCards();
 
+  ///////////////// Click and drag /////////////////////
+  const $card = $('.front');
+  console.log('$card is', $card);
+
+  $card.mousedown(function() {
+    pushToArray(draggableCards, $(this));
+    console.log('Draggable cards is', draggableCards);
+  })
+
+  $card.mouseup(function() {
+    draggableCards = [];
+    console.log('Draggable cards is', draggableCards);
+  })
+
+  // TODO: finish this code to move kings about
+  // const $kings = $('[value=13]');
+  // $kings.dblclick(function() {
+  //   console.log($('.column').children.length);
+  // });
 });
