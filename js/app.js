@@ -332,17 +332,30 @@ $(() => {
 
   ///////////////// Click and drag /////////////////////
   const $card = $('.front');
-  console.log('$card is', $card);
+
+  const getCursorCoords = () => {
+    $(document).bind('mousemove', function(e) {
+      console.log('Cursor coords are', e.pageX, e.pageY);
+    })
+  }
+
+  const turnOffMousemove = () => {
+    $(document).unbind('mousemove');
+  }
 
   $card.mousedown(function() {
     pushToArray(draggableCards, $(this));
     console.log('Draggable cards is', draggableCards);
+    getCursorCoords();
   })
 
   $card.mouseup(function() {
     draggableCards = [];
     console.log('Draggable cards is', draggableCards);
+    turnOffMousemove();
   })
+
+
 
   // TODO: finish this code to move kings about
   // const $kings = $('[value=13]');
