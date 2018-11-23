@@ -220,6 +220,10 @@ const addDblClickEventListenerToColumnCards = () => {
   $frontCard.on('dblclick', bankCard);
 };
 
+const toggleCursor = (el, cursor) => {
+  el.css({ cursor: cursor });
+}
+
 //BUG: cannot go round deck again for a third time
 $(() => {
 
@@ -319,6 +323,7 @@ $(() => {
     }
     if(remainingCardsBack.length > 0) {
       addDblClickEventListener();
+      makeCardsDraggable();
     }
   });
 
@@ -333,15 +338,15 @@ $(() => {
   ///////////////// Click and drag /////////////////////
   const $card = $('.front');
 
+  const moveCard = (coords, card) => {
+    const cardOffset = card.offset({ top: coords[1] - 45, left: coords[0] - 45 });
+    console.log('Card is at', cardOffset);
+  }
+
   const getCursorCoords = (card) => {
     $(document).bind('mousemove', function(e) {
       const cursorCoords = [e.pageX, e.pageY]
-      // const difference = [cursorCoords[0] - originalCoords[0], cursorCoords[1] - originalCoords[1]];
-      // console.log('Difference is', difference);
-
-      const cardOffset = card.offset({ top: cursorCoords[1] - 45, left: cursorCoords[0] - 45 });
-      console.log('Card is at', cardOffset);
-      // card.css({ left: cursorCoords[0], top: cursorCoords[1] });
+      moveCard(cursorCoords, card)
     })
   }
 
@@ -349,21 +354,35 @@ $(() => {
     $(document).unbind('mousemove');
   }
 
-  $card.mousedown(function(e) {
-    // const originalCoords = [e.pageX, e.pageY];
-    // console.log('Original coords are', originalCoords);
-    pushToArray(draggableCards, $(this));
-    console.log('Draggable cards is', draggableCards);
-    getCursorCoords($(this));
-  })
-
-  $card.mouseup(function() {
-    draggableCards = [];
-    console.log('Draggable cards is', draggableCards);
-    turnOffMousemove();
+  $card.mouseover(function() {
+    toggleCursor($(this), 'pointer');
   })
 
 
+  const dragCard = () => {
+    $card.mousedown(function(e) {
+      pushToArray(draggableCards, $(this));
+      console.log('Draggable cards is', draggableCards);
+      getCursorCoords($(this));
+      toggleCursor($(this), 'grabbing');
+    })
+  }
+
+  const releaseCard = () => {
+    $card.mouseup(function() {
+      draggableCards = [];
+      console.log('Draggable cards is', draggableCards);
+      turnOffMousemove();
+      toggleCursor($(this), 'auto');
+    })
+  }
+
+  const makeCardsDraggable = () => {
+    dragCard();
+    releaseCard();
+  }
+
+  makeCardsDraggable();
 
   // TODO: finish this code to move kings about
   // const $kings = $('[value=13]');
