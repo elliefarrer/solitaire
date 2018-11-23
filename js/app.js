@@ -333,9 +333,15 @@ $(() => {
   ///////////////// Click and drag /////////////////////
   const $card = $('.front');
 
-  const getCursorCoords = () => {
+  const getCursorCoords = (card) => {
     $(document).bind('mousemove', function(e) {
-      console.log('Cursor coords are', e.pageX, e.pageY);
+      const cursorCoords = [e.pageX, e.pageY]
+      // const difference = [cursorCoords[0] - originalCoords[0], cursorCoords[1] - originalCoords[1]];
+      // console.log('Difference is', difference);
+
+      const cardOffset = card.offset({ top: cursorCoords[1] - 45, left: cursorCoords[0] - 45 });
+      console.log('Card is at', cardOffset);
+      // card.css({ left: cursorCoords[0], top: cursorCoords[1] });
     })
   }
 
@@ -343,10 +349,12 @@ $(() => {
     $(document).unbind('mousemove');
   }
 
-  $card.mousedown(function() {
+  $card.mousedown(function(e) {
+    // const originalCoords = [e.pageX, e.pageY];
+    // console.log('Original coords are', originalCoords);
     pushToArray(draggableCards, $(this));
     console.log('Draggable cards is', draggableCards);
-    getCursorCoords();
+    getCursorCoords($(this));
   })
 
   $card.mouseup(function() {
